@@ -20,3 +20,4 @@ with open("index.html", "w", encoding="utf-8") as arquivo:
     arquivo.write(html_final)
 
 print("Sucesso! O arquivo 'index.html' foi gerado e atualizado com os novos dados.")
+# 5. Testando o save do Git
