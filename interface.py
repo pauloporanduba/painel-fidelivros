@@ -1,6 +1,10 @@
 # Arquivo: interface.py
 
-def gerar_html(entradas, saidas, lucro, livros):
+def gerar_html():
+    """
+    Função que retorna a estrutura do HTML da página de Login e Cadastro.
+    Não recebe mais parâmetros locais fixos para que a página seja dinâmica.
+    """
     html = f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -151,23 +155,21 @@ def gerar_html(entradas, saidas, lucro, livros):
 
     <div class="background-container">
         <div class="conteudo-central">
-            <!-- Sua logo local -->
             <img src="imagens/fidelivros_logo_principal.png" alt="Logo Fidelivros" class="logo-principal">
 
-            <!-- Texto Vermelho e Branco -->
             <h1 class="letras-principal">fidelivros</h1>
 
-            <!-- Campos de Login -->
-            <div class="form-container">
-                <input type="text" placeholder="Usuário ou E-mail" class="input-fidelivros">
-                <input type="password" placeholder="Senha" class="input-fidelivros">
-            </div>
+            <form action="/cadastrar" method="POST" class="form-container">
+                <input type="text" name="txt_usuario" placeholder="Nome de Usuário" class="input-fidelivros" required>
+                <input type="email" name="txt_email" placeholder="Seu E-mail" class="input-fidelivros" required>
+                <input type="password" name="txt_senha" placeholder="Senha" class="input-fidelivros" required>
 
-            <!-- Ações: Entrar e Cadastrar -->
-            <div class="botoes-container">
-                <button class="botao-entrar">ENTRAR</button>
-                <button class="botao-cadastrar">CRIAR CONTA</button>
-            </div>
+                <div class="botoes-container">
+                    <button type="button" class="botao-entrar">ENTRAR</button>
+                    
+                    <button type="submit" class="botao-cadastrar">CRIAR CONTA</button>
+                </div>
+            </form>
         </div>
     </div>
 
