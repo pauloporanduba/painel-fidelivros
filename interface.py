@@ -32,7 +32,7 @@ def gerar_html():
             width: 100%;
             height: 100%;
             background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-                             url('imagens/fundo_principal_site.png');
+                             url('static/imagens/fundo_principal_site.png');
             background-size: cover;
             background-position: center;
             display: flex;
