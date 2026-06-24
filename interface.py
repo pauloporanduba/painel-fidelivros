@@ -6,9 +6,9 @@ def gerar_html(entradas, saidas, lucro, livros):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fidelivros - Início</title>
+    <title>Fidelivros - Login</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap');
 
         * {{
             margin: 0;
@@ -27,7 +27,6 @@ def gerar_html(entradas, saidas, lucro, livros):
             position: relative;
             width: 100%;
             height: 100%;
-            /* O linear-gradient aplica a camada preta com 40% de opacidade (0.4) para dar destaque */
             background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
                              url('imagens/fundo_principal_site.png');
             background-size: cover;
@@ -37,60 +36,114 @@ def gerar_html(entradas, saidas, lucro, livros):
             align-items: center;
         }}
 
-        /* Bloco centralizado para alinhar os elementos verticalmente */
+        /* Bloco centralizado para o formulário */
         .conteudo-central {{
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
             z-index: 2;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
         }}
 
         /* Imagem da Logo Principal */
         .logo-principal {{
             width: auto;
-            height: 180px; /* Ajuste a altura conforme achar melhor */
-            margin-bottom: 15px;
+            height: 150px;
+            margin-bottom: 10px;
         }}
 
-        /* --- Estilo Atualizado para as Letras --- */
+        /* Texto Fidelivros */
         .letras-principal {{
-            color: #FFFFFF; /* Branco para a cor principal do texto */
-            font-size: 50px; /* Ajuste o tamanho conforme necessário */
-            font-weight: 900; /* Texto bem grosso */
+            color: #FFFFFF;
+            font-size: 42px;
+            font-weight: 900;
             text-transform: uppercase;
-            margin-bottom: 35px;
-            /* Contorno (stroke) Vermelho e Branco para destaque total */
+            margin-bottom: 30px;
             text-shadow: 
                 -2px -2px 0 #D6001C,  1px -1px 0 #D6001C,
                 -2px 1px 0 #D6001C,   1px 1px 0 #D6001C,
                 0px 2px 0 #FFFFFF,    0px -2px 0 #FFFFFF,
                 2px 0px 0 #FFFFFF,    -2px 0px 0 #FFFFFF;
         }}
-        /* ---------------------------------------- */
 
-        /* Botão Artificial INICIAR criado com CSS */
-        .botao-iniciar {{
-            display: inline-block;
-            background-color: #D6001C; /* Vermelho Fidelivros */
-            color: #FFFFFF;
-            font-size: 22px;
-            font-weight: 700;
-            text-transform: uppercase;
-            text-decoration: none;
-            padding: 14px 65px;
-            border: 3px solid #FFFFFF; /* Borda branca idêntica ao Canva */
-            border-radius: 50px; /* Cantos totalmente arredondados */
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            cursor: pointer;
+        /* Container dos campos de entrada */
+        .form-container {{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
         }}
 
-        /* Efeito de hover (passar o mouse) no botão artificial */
-        .botao-iniciar:hover {{
+        /* Estilização dos Inputs (Campos de texto) */
+        .input-fidelivros {{
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            border: 2px solid #FFFFFF;
+            border-radius: 50px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333333;
+            outline: none;
+            transition: all 0.3s ease;
+        }}
+
+        .input-fidelivros:focus {{
+            border-color: #D6001C;
+            box-shadow: 0 0 10px rgba(214, 0, 28, 0.5);
+        }}
+
+        /* Container dos Botões */
+        .botoes-container {{
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }}
+
+        /* Botão Entrar (Vermelho) */
+        .botao-entrar {{
+            width: 100%;
+            background-color: #D6001C;
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 3px solid #FFFFFF;
+            border-radius: 50px;
+            padding: 12px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }}
+
+        .botao-entrar:hover {{
             background-color: #b50017;
-            transform: scale(1.05); /* Dá um leve zoom ao passar o mouse */
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            transform: scale(1.03);
+        }}
+
+        /* Botão Cadastrar (Transparente com borda branca) */
+        .botao-cadastrar {{
+            width: 100%;
+            background-color: transparent;
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 2px solid #FFFFFF;
+            border-radius: 50px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }}
+
+        .botao-cadastrar:hover {{
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.03);
         }}
     </style>
 </head>
@@ -98,14 +151,23 @@ def gerar_html(entradas, saidas, lucro, livros):
 
     <div class="background-container">
         <div class="conteudo-central">
-            <!-- Puxando a sua imagem da logo local -->
+            <!-- Sua logo local -->
             <img src="imagens/fidelivros_logo_principal.png" alt="Logo Fidelivros" class="logo-principal">
 
-            <!-- Novo Texto em Branco e Vermelho -->
+            <!-- Texto Vermelho e Branco -->
             <h1 class="letras-principal">fidelivros</h1>
 
-            <!-- Botão artificial interativo -->
-            <a href="#" class="botao-iniciar">INICIAR</a>
+            <!-- Campos de Login -->
+            <div class="form-container">
+                <input type="text" placeholder="Usuário ou E-mail" class="input-fidelivros">
+                <input type="password" placeholder="Senha" class="input-fidelivros">
+            </div>
+
+            <!-- Ações: Entrar e Cadastrar -->
+            <div class="botoes-container">
+                <button class="botao-entrar">ENTRAR</button>
+                <button class="botao-cadastrar">CRIAR CONTA</button>
+            </div>
         </div>
     </div>
 

@@ -26,7 +26,7 @@
             height: 100%;
             /* O linear-gradient aplica a camada preta com 40% de opacidade (0.4) para dar destaque */
             background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-                             url('Imagens/Fundo_principal_site.png');
+                             url('imagens/fundo_principal_site.png');
             background-size: cover;
             background-position: center;
             display: flex;
@@ -50,12 +50,21 @@
             margin-bottom: 15px;
         }
 
-        /* Imagem das Letras (Nome Fidelivros) */
+        /* --- Estilo Atualizado para as Letras --- */
         .letras-principal {
-            width: auto;
-            height: 50px; /* Ajuste a altura para combinar com o seu design */
+            color: #FFFFFF; /* Branco para a cor principal do texto */
+            font-size: 50px; /* Ajuste o tamanho conforme necessário */
+            font-weight: 900; /* Texto bem grosso */
+            text-transform: uppercase;
             margin-bottom: 35px;
+            /* Contorno (stroke) Vermelho e Branco para destaque total */
+            text-shadow: 
+                -2px -2px 0 #D6001C,  1px -1px 0 #D6001C,
+                -2px 1px 0 #D6001C,   1px 1px 0 #D6001C,
+                0px 2px 0 #FFFFFF,    0px -2px 0 #FFFFFF,
+                2px 0px 0 #FFFFFF,    -2px 0px 0 #FFFFFF;
         }
+        /* ---------------------------------------- */
 
         /* Botão Artificial INICIAR criado com CSS */
         .botao-iniciar {
@@ -87,10 +96,10 @@
     <div class="background-container">
         <div class="conteudo-central">
             <!-- Puxando a sua imagem da logo local -->
-            <img src="Imagens/Fidelivros_logo_principal.png" alt="Logo Fidelivros" class="logo-principal">
+            <img src="imagens/fidelivros_logo_principal.png" alt="Logo Fidelivros" class="logo-principal">
 
-            <!-- Puxando a sua imagem das letras local -->
-            <img src="Imagens/Fidelivros_letras_principal.png" alt="Fidelivros" class="letras-principal">
+            <!-- Novo Texto em Branco e Vermelho -->
+            <h1 class="letras-principal">fidelivros</h1>
 
             <!-- Botão artificial interativo -->
             <a href="#" class="botao-iniciar">INICIAR</a>
