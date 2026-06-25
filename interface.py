@@ -2,15 +2,15 @@
 
 def gerar_html():
     """
-    Função que retorna a estrutura do HTML da página de Login e Cadastro.
-    Não recebe mais parâmetros locais fixos para que a página seja dinâmica.
+    Função que retorna a estrutura do HTML da página de Login restrita.
+    Apenas usuários previamente cadastrados pelo administrador podem tentar o acesso.
     """
     html = f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fidelivros - Login</title>
+    <title>Fidelivros - Login Restrito</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap');
 
@@ -26,7 +26,7 @@ def gerar_html():
             overflow: hidden;
         }}
 
-        /* Container do Fundo com a sua imagem local e o efeito escurecido */
+        /* Container do Fundo com o caminho correto do Flask (static/) e a camada escura */
         .background-container {{
             position: relative;
             width: 100%;
@@ -59,7 +59,7 @@ def gerar_html():
             margin-bottom: 10px;
         }}
 
-        /* Texto Fidelivros */
+        /* Texto Fidelivros com contorno */
         .letras-principal {{
             color: #FFFFFF;
             font-size: 42px;
@@ -82,7 +82,7 @@ def gerar_html():
             margin-bottom: 20px;
         }}
 
-        /* Estilização dos Inputs (Campos de texto) */
+        /* Estilização dos Inputs */
         .input-fidelivros {{
             width: 100%;
             padding: 14px 20px;
@@ -101,15 +101,12 @@ def gerar_html():
             box-shadow: 0 0 10px rgba(214, 0, 28, 0.5);
         }}
 
-        /* Container dos Botões */
+        /* Container do Botão */
         .botoes-container {{
             width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
         }}
 
-        /* Botão Entrar (Vermelho) */
+        /* Botão Entrar Único (Vermelho com borda branca) */
         .botao-entrar {{
             width: 100%;
             background-color: #D6001C;
@@ -119,7 +116,7 @@ def gerar_html():
             text-transform: uppercase;
             border: 3px solid #FFFFFF;
             border-radius: 50px;
-            padding: 12px;
+            padding: 14px;
             cursor: pointer;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
@@ -129,45 +126,23 @@ def gerar_html():
             background-color: #b50017;
             transform: scale(1.03);
         }}
-
-        /* Botão Cadastrar (Transparente com borda branca) */
-        .botao-cadastrar {{
-            width: 100%;
-            background-color: transparent;
-            color: #FFFFFF;
-            font-size: 16px;
-            font-weight: 700;
-            text-transform: uppercase;
-            border: 2px solid #FFFFFF;
-            border-radius: 50px;
-            padding: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }}
-
-        .botao-cadastrar:hover {{
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: scale(1.03);
-        }}
     </style>
 </head>
 <body>
 
     <div class="background-container">
         <div class="conteudo-central">
-            <img src="imagens/fidelivros_logo_principal.png" alt="Logo Fidelivros" class="logo-principal">
+            <img src="static/imagens/fidelivros_logo_principal.png" alt="Logo Fidelivros" class="logo-principal">
 
             <h1 class="letras-principal">fidelivros</h1>
 
-            <form action="/cadastrar" method="POST" class="form-container">
-                <input type="text" name="txt_usuario" placeholder="Nome de Usuário" class="input-fidelivros" required>
-                <input type="email" name="txt_email" placeholder="Seu E-mail" class="input-fidelivros" required>
+            <form action="/login" method="POST" class="form-container">
+                
+                <input type="text" name="txt_usuario" placeholder="Usuário" class="input-fidelivros" required>
                 <input type="password" name="txt_senha" placeholder="Senha" class="input-fidelivros" required>
 
                 <div class="botoes-container">
-                    <button type="button" class="botao-entrar">ENTRAR</button>
-                    
-                    <button type="submit" class="botao-cadastrar">CRIAR CONTA</button>
+                    <button type="submit" class="botao-entrar">ENTRAR</button>
                 </div>
             </form>
         </div>
