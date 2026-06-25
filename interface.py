@@ -152,3 +152,71 @@ def gerar_html():
 </html>
 """
     return html
+
+# Adicione este código no final do seu interface.py
+
+def gerar_html_adm(lista_usuarios):
+    """
+    Função detalhada que gera a interface do painel do Administrador.
+    Recebe a lista de usuários cadastrados no sistema para exibir na tela.
+    """
+    # Criamos as linhas da tabela dinamicamente com base nos usuários atuais do sistema
+    linhas_tabela = ""
+    for usuario, senha in lista_usuarios.items():
+        linhas_tabela += f"""
+        <tr>
+            <td style="padding: 10px; border: 1px solid #dddddd;">{usuario}</td>
+            <td style="padding: 10px; border: 1px solid #dddddd;">{senha}</td>
+        </tr>
+        """
+
+    html = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidelivros - Painel ADM</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap');
+        * {{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }}
+        body {{ background-color: #f4f6f9; padding: 40px; color: #333333; }}
+        .container-adm {{ max-width: 800px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }}
+        h1 {{ color: #D6001C; margin-bottom: 10px; }}
+        h2 {{ margin-top: 30px; margin-bottom: 15px; font-size: 20px; }}
+        .form-adm {{ display: flex; gap: 10px; margin-bottom: 30px; }}
+        .input-adm {{ padding: 10px; border: 1px solid #cccccc; border-radius: 4px; flex: 1; font-size: 14px; }}
+        .btn-adm {{ background-color: #D6001C; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 700; }}
+        .btn-adm:hover {{ background-color: #b50017; }}
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        th {{ background-color: #333333; color: white; padding: 10px; text-align: left; }}
+    </style>
+</head>
+<body>
+    <div class="container-adm">
+        <h1>Painel de Controle - Administrador</h1>
+        <p>Gerenciamento interno de acessos ao Sistema Fidelivros.</p>
+        
+        <h2>Cadastrar Novo Usuário Autorizado</h2>
+        <form action="/adm-adicionar-usuario" method="POST" class="form-adm">
+            <input type="text" name="novo_usuario" placeholder="Nome do Usuário" class="input-adm" required>
+            <input type="text" name="nova_senha" placeholder="Senha Provisória" class="input-adm" required>
+            <button type="submit" class="btn-adm">CADASTRAR</button>
+        </form>
+
+        <h2>Usuários com Acesso ao Sistema</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="padding: 10px;">Usuário</th>
+                    <th style="padding: 10px;">Senha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {linhas_tabela}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+"""
+    return html
