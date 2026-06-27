@@ -53,8 +53,8 @@ def gerar_html_login():
 
 def gerar_html_menu(nome_usuario):
     """
-    2. TELA DE MENU PRINCIPAL (ESTILO IMOBILIÁRIA FORMA)
-    Só aparece depois que o login é feito com sucesso.
+    Gera a interface do Menu Principal com uma barra de navegação vertical (Sidebar)
+    que expande automaticamente ao passar o mouse por cima (efeito Hover).
     """
     html = f"""<!DOCTYPE html>
 <html lang="pt-BR">
@@ -63,70 +63,198 @@ def gerar_html_menu(nome_usuario):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fidelivros - Menu Principal</title>
     <style>
+        /* Importação da fonte Montserrat para manter a identidade moderna do Fidelivros */
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap');
+        
+        /* Reset global para remover as margens nativas dos navegadores e fixar a fonte */
         * {{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }}
-        body, html {{ height: 100%; background-color: #ffffff; color: #333333; }}
         
-        /* Navbar Superior */
-        .navbar {{
-            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
-            background-color: #2A2A2A; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; z-index: 1000;
-            border-bottom: 2px solid #D6001C;
+        /* O corpo do site ocupa toda a tela e esconde barras de rolagem desnecessárias */
+        body, html {{ height: 100%; width: 100%; background-color: #ffffff; overflow: hidden; }}
+        
+        /* 
+           BARRA LATERAL (SIDEBAR) - CONFIGURAÇÃO INICIAL (FECHADA)
+           - Definimos uma largura inicial estreita (85px) para caber apenas os ícones.
+           - 'transition: width 0.4s' faz com que a abertura e o fechamento sejam suaves e elegantes.
+        */
+        .sidebar {{
+            position: fixed; top: 0; left: 0; height: 100vh;
+            width: 85px; background-color: #1A1A1A;
+            border-right: 4px solid #D6001C; display: flex; flex-direction: column;
+            z-index: 1000; transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            overflow: hidden;
         }}
-        .logo-link {{ display: flex; align-items: center; text-decoration: none; height: 100%; }}
-        .logo-nav {{ height: 45px; width: auto; transition: transform 0.2s ease; }}
-        .logo-link:hover .logo-nav {{ transform: scale(1.05); }}
         
-        .nav-links {{ display: flex; gap: 30px; list-style: none; }}
-        .nav-links a {{ color: #FFFFFF; text-decoration: none; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s ease; }}
-        .nav-links a:hover {{ color: #D6001C; }}
+        /* 
+           EFEITO DE EXPANSÃO DA BARRA
+           Quando o mouse passa por cima da área da sidebar, a largura dela muda de 85px para 260px.
+        */
+        .sidebar:hover {{
+            width: 260px;
+        }}
         
-        /* Botão de Logout no canto direito */
-        .btn-logout {{ background-color: #D6001C; color: #FFFFFF; text-decoration: none; font-size: 12px; font-weight: 700; text-transform: uppercase; padding: 10px 20px; border: 2px solid #FFFFFF; border-radius: 4px; transition: all 0.3s ease; }}
-        .btn-logout:hover {{ background-color: #FFFFFF; color: #D6001C; border-color: #D6001C; }}
+        /* Container do Logotipo no topo da barra */
+        .sidebar-logo {{
+            width: 100%; height: 100px; display: flex; align-items: center;
+            padding-left: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }}
         
-        /* Hero Section */
+        /* Imagem do logotipo dimensionada para se ajustar perfeitamente no modo fechado */
+        .sidebar-logo img {{
+            height: 45px; width: auto; transition: transform 0.3s ease;
+        }}
+        
+        /* Lista que agrupa os itens do menu dispostos verticalmente */
+        .nav-links {{
+            list-style: none; display: flex; flex-direction: column; gap: 10px; padding-top: 20px; flex-grow: 1;
+        }}
+        
+        /* Links de navegação internos da Sidebar */
+        .nav-links a {{
+            display: flex; align-items: center; text-decoration: none;
+            height: 60px; padding-left: 25px; position: relative;
+            transition: background 0.3s ease;
+        }}
+        
+        /* Efeito visual de destaque no fundo do link ao passar o mouse */
+        .nav-links a:hover {{
+            background-color: rgba(214, 0, 28, 0.15);
+        }}
+        
+        /* 
+           ESTILIZAÇÃO DOS ÍCONES (SVG)
+           - Fixamos uma largura de 32px para que fiquem alinhados no centro quando fechado.
+           - O 'transition: transform 0.3s' cria aquele leve crescimento (zoom) pedido.
+        */
+        .nav-icon {{
+            width: 32px; height: 32px; fill: none; stroke: #D6001C;
+            stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+            flex-shrink: 0; transition: transform 0.3s ease;
+        }}
+        
+        /* EFEITO DE CRESCIMENTO DO ÍCONE: Quando passa o mouse no link, o ícone ganha escala */
+        .nav-links a:hover .nav-icon {{
+            transform: scale(1.15);
+        }}
+        
+        /* 
+           ESTILIZAÇÃO DO TEXTO DOS LINKS
+           - Inicialmente eles ficam transparentes (opacity: 0) e deslocados para a esquerda.
+           - 'white-space: nowrap' impede que o texto quebre linha enquanto a barra expande.
+        */
+        .nav-text {{
+            color: #FFFFFF; font-size: 14px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; margin-left: 25px; opacity: 0; transform: translateX(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease; white-space: nowrap;
+        }}
+        
+        /* TORNA OS TEXTOS VISÍVEIS: Quando a barra estiver em modo expandido (:hover), mostra as letras */
+        .sidebar:hover .nav-text {{
+            opacity: 1; transform: translateX(0);
+            /* Adiciona um pequeno atraso (delay) para a letra aparecer harmoniosamente após a barra abrir */
+            transition-delay: 0.15s;
+        }}
+        
+        /* Botão Especial de Logout posicionado no rodapé da Sidebar */
+        .btn-logout {{
+            border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: auto; margin-bottom: 20px;
+        }}
+        
+        /* Altera a cor do ícone de sair para cinza claro por padrão */
+        .btn-logout .nav-icon {{ stroke: #A0A0A0; }}
+        
+        /* Se passar o mouse no botão de sair, ele brilha em vermelho */
+        .btn-logout:hover .nav-icon {{ stroke: #D6001C; }}
+        
+        /* 
+           CONTEÚDO PRINCIPAL (HERO SECTION)
+           Como a barra lateral está fixa na esquerda, adicionamos um 'padding-left: 85px' 
+           para que o texto centralizado compense a largura da barra fechada sem sobreposição.
+        */
         .hero-section {{
             position: relative; width: 100%; height: 100vh;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('static/imagens/fundo_principal_site.png');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('static/imagens/fundo_menu_site.png');
             background-size: cover; background-position: center;
-            display: flex; justify-content: center; align-items: center; padding-top: 70px;
+            display: flex; justify-content: center; align-items: center; padding-left: 85px;
         }}
-        .hero-conteudo {{ text-align: center; color: #FFFFFF; max-width: 800px; padding: 0 20px; z-index: 2; }}
-        .hero-subtitulo {{ font-size: 16px; font-weight: 500; text-transform: uppercase; letter-spacing: 3px; color: #D6001C; margin-bottom: 10px; }}
-        .hero-titulo {{ font-size: 56px; font-weight: 900; text-transform: uppercase; line-height: 1.1; margin-bottom: 20px; letter-spacing: 1px; text-shadow: 2px 2px 8px rgba(0,0,0,0.7); }}
-        .hero-descricao {{ font-size: 18px; font-weight: 400; margin-bottom: 35px; color: #E0E0E0; text-shadow: 1px 1px 4px rgba(0,0,0,0.5); }}
         
-        .btn-saiba-mais {{ display: inline-block; background-color: #00B495; color: #FFFFFF; font-size: 14px; font-weight: 700; text-transform: uppercase; text-decoration: none; padding: 15px 40px; border-radius: 4px; letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }}
-        .btn-saiba-mais:hover {{ background-color: #009379; transform: translateY(-2px); }}
+        /* Alinhamento dos textos centrais */
+        .hero-conteudo {{ text-align: center; color: #FFFFFF; max-width: 850px; padding: 0 20px; }}
+        .hero-subtitulo {{ font-size: 20px; font-weight: 700; color: #D6001C; margin-bottom: 12px; letter-spacing: 1px; }}
+        .hero-titulo {{ font-size: 64px; font-weight: 900; text-transform: uppercase; line-height: 1.1; margin-bottom: 20px; letter-spacing: 2px; text-shadow: 3px 3px 10px rgba(0,0,0,0.8); }}
+        .hero-descricao {{ font-size: 18px; font-weight: 400; margin-bottom: 35px; color: #E5E5E5; text-shadow: 2px 2px 6px rgba(0,0,0,0.6); }}
+        
+        /* Botão verde central clássico */
+        .btn-saiba-mais {{ display: inline-block; background-color: #00B495; color: #FFFFFF; font-size: 14px; font-weight: 700; text-transform: uppercase; text-decoration: none; padding: 15px 40px; border-radius: 4px; letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }}
+        .btn-saiba-mais:hover {{ background-color: #009379; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }}
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <a href="/menu" class="logo-link">
-            <img src="static/imagens/fidelivros_logo_principal.png" alt="Logo Fidelivros" class="logo-nav">
-        </a>
+
+    <!-- ESTRUTURA COMPLETA DA SIDEBAR DINÂMICA -->
+    <nav class="sidebar">
+        <!-- Logo Corporativa Superior -->
+        <div class="sidebar-logo">
+            <img src="static/imagens/fidelivros_logo_principal.png" alt="Logo">
+        </div>
+        
+        <!-- Links com Ícones Vetoriais puros (SVG), dispensando arquivos externos de imagem -->
         <ul class="nav-links">
-            <li><a href="/menu">Dashboard</a></li>
-            <li><a href="#">Relatórios</a></li>
-            <li><a href="#">Estoque</a></li>
-            <li><a href="#">Faturamento</a></li>
+            <li>
+                <a href="/menu">
+                    <!-- Ícone Vetorial de Gráfico de Linhas (Dashboard) -->
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                    </svg>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <!-- Ícone Vetorial de Gráfico de Barras (Relatório) -->
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M18 20V10M12 20V4M6 20v-6"/>
+                    </svg>
+                    <span class="nav-text">Relatórios</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <!-- Ícone Vetorial de Monitor com Cifrão de Dinheiro (Faturamento) -->
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <rect x="2" y="3" width="20" height="14" rx="2"/>
+                        <path d="M12 17v4M8 21h8M12 7v6M10 9h4"/>
+                    </svg>
+                    <span class="nav-text">Faturamento</span>
+                </a>
+            </li>
+            
+            <!-- Botão de Desconexão (Sair) ancorado no final -->
+            <li class="btn-logout">
+                <a href="/logout">
+                    <!-- Ícone Vetorial de Porta de Saída -->
+                    <svg class="nav-icon" viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                    </svg>
+                    <span class="nav-text">Sair (Logoff)</span>
+                </a>
+            </li>
         </ul>
-        <a href="/logout" class="btn-logout">Sair (Logoff) ➔</a>
     </nav>
 
+    <!-- PAINEL CENTRAL DE CONTEÚDO -->
     <section class="hero-section">
         <div class="hero-conteudo">
-            <p class="hero-subtitulo">Olá, {nome_usuario} • Painel Corporativo</p>
-            <h1 class="hero-titulo">Fidelivros<br>Corporativo</h1>
-            <p class="hero-descricao">Gerenciamento inteligente de relatórios, monitoramento de estoque e análise de margens de lucro de forma totalmente automatizada.</p>
-            <a href="#" class="btn-saiba-mais">Abrir Relatórios &rarr;</a>
+            <p class="hero-subtitulo">Olá, {nome_usuario}</p>
+            <h1 class="hero-titulo">FIDELIVROS<br>CORPORATIVA</h1>
+            <p class="hero-descricao">Análise inteligente de faturamento, emissão de relatórios consolidados e monitoramento gerencial através de painéis automatizados.</p>
+            <a href="#" class="btn-saiba-mais">Visualizar Dashboard &rarr;</a>
         </div>
     </section>
+
 </body>
 </html>"""
     return html
-
 
 def gerar_html_adm(lista_usuarios):
     """
