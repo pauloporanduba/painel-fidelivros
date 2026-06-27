@@ -53,8 +53,8 @@ def gerar_html_login():
 
 def gerar_html_menu(nome_usuario):
     """
-    Gera a interface do Menu Principal com uma barra de navegação vertical (Sidebar)
-    que expande automaticamente ao passar o mouse por cima (efeito Hover).
+    Gera a interface do Menu Principal com uma barra de navegação vertical (Sidebar).
+    O logotipo e o nome 'Fidelivros' expandem juntos ao passar o mouse.
     """
     html = f"""<!DOCTYPE html>
 <html lang="pt-BR">
@@ -63,20 +63,13 @@ def gerar_html_menu(nome_usuario):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fidelivros - Menu Principal</title>
     <style>
-        /* Importação da fonte Montserrat para manter a identidade moderna do Fidelivros */
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap');
         
-        /* Reset global para remover as margens nativas dos navegadores e fixar a fonte */
         * {{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }}
         
-        /* O corpo do site ocupa toda a tela e esconde barras de rolagem desnecessárias */
         body, html {{ height: 100%; width: 100%; background-color: #ffffff; overflow: hidden; }}
         
-        /* 
-           BARRA LATERAL (SIDEBAR) - CONFIGURAÇÃO INICIAL (FECHADA)
-           - Definimos uma largura inicial estreita (85px) para caber apenas os ícones.
-           - 'transition: width 0.4s' faz com que a abertura e o fechamento sejam suaves e elegantes.
-        */
+        /* SIDEBAR CONFIGURAÇÃO */
         .sidebar {{
             position: fixed; top: 0; left: 0; height: 100vh;
             width: 85px; background-color: #1A1A1A;
@@ -85,92 +78,79 @@ def gerar_html_menu(nome_usuario):
             overflow: hidden;
         }}
         
-        /* 
-           EFEITO DE EXPANSÃO DA BARRA
-           Quando o mouse passa por cima da área da sidebar, a largura dela muda de 85px para 260px.
-        */
         .sidebar:hover {{
             width: 260px;
         }}
         
-        /* Container do Logotipo no topo da barra */
+        /* CONTAINER DO LOGO E TEXTO DO TOPO */
         .sidebar-logo {{
             width: 100%; height: 100px; display: flex; align-items: center;
             padding-left: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-decoration: none; /* Garante que se virar link, não mude a cor do texto */
         }}
         
-        /* Imagem do logotipo dimensionada para se ajustar perfeitamente no modo fechado */
         .sidebar-logo img {{
-            height: 45px; width: auto; transition: transform 0.3s ease;
+            height: 45px; width: auto; flex-shrink: 0;
         }}
         
-        /* Lista que agrupa os itens do menu dispostos verticalmente */
+        /* TEXTO 'FIDELIVROS' DO TOPO */
+        .logo-text {{
+            color: #FFFFFF; font-size: 18px; font-weight: 900; text-transform: uppercase;
+            letter-spacing: 2px; margin-left: 15px; opacity: 0; transform: translateX(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease; white-space: nowrap;
+        }}
+        
+        /* EFEITO PARA MOSTRAR O NOME DA LOGO NO HOVER */
+        .sidebar:hover .logo-text {{
+            opacity: 1; transform: translateX(0);
+            transition-delay: 0.15s; /* Delay idêntico ao dos outros textos para abrir em sincronia */
+        }}
+        
+        /* LINKS DE NAVEGAÇÃO */
         .nav-links {{
             list-style: none; display: flex; flex-direction: column; gap: 10px; padding-top: 20px; flex-grow: 1;
         }}
         
-        /* Links de navegação internos da Sidebar */
         .nav-links a {{
             display: flex; align-items: center; text-decoration: none;
             height: 60px; padding-left: 25px; position: relative;
             transition: background 0.3s ease;
         }}
         
-        /* Efeito visual de destaque no fundo do link ao passar o mouse */
         .nav-links a:hover {{
             background-color: rgba(214, 0, 28, 0.15);
         }}
         
-        /* 
-           ESTILIZAÇÃO DOS ÍCONES (SVG)
-           - Fixamos uma largura de 32px para que fiquem alinhados no centro quando fechado.
-           - O 'transition: transform 0.3s' cria aquele leve crescimento (zoom) pedido.
-        */
         .nav-icon {{
             width: 32px; height: 32px; fill: none; stroke: #D6001C;
             stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
             flex-shrink: 0; transition: transform 0.3s ease;
         }}
         
-        /* EFEITO DE CRESCIMENTO DO ÍCONE: Quando passa o mouse no link, o ícone ganha escala */
         .nav-links a:hover .nav-icon {{
             transform: scale(1.15);
         }}
         
-        /* 
-           ESTILIZAÇÃO DO TEXTO DOS LINKS
-           - Inicialmente eles ficam transparentes (opacity: 0) e deslocados para a esquerda.
-           - 'white-space: nowrap' impede que o texto quebre linha enquanto a barra expande.
-        */
         .nav-text {{
             color: #FFFFFF; font-size: 14px; font-weight: 700; text-transform: uppercase;
             letter-spacing: 1px; margin-left: 25px; opacity: 0; transform: translateX(-10px);
             transition: opacity 0.3s ease, transform 0.3s ease; white-space: nowrap;
         }}
         
-        /* TORNA OS TEXTOS VISÍVEIS: Quando a barra estiver em modo expandido (:hover), mostra as letras */
         .sidebar:hover .nav-text {{
             opacity: 1; transform: translateX(0);
-            /* Adiciona um pequeno atraso (delay) para a letra aparecer harmoniosamente após a barra abrir */
             transition-delay: 0.15s;
         }}
         
-        /* Botão Especial de Logout posicionado no rodapé da Sidebar */
+        /* LOGOUT */
         .btn-logout {{
             border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: auto; margin-bottom: 20px;
         }}
         
-        /* Altera a cor do ícone de sair para cinza claro por padrão */
         .btn-logout .nav-icon {{ stroke: #A0A0A0; }}
-        
-        /* Se passar o mouse no botão de sair, ele brilha em vermelho */
         .btn-logout:hover .nav-icon {{ stroke: #D6001C; }}
         
-        /* 
-           CONTEÚDO PRINCIPAL (HERO SECTION)
-           Como a barra lateral está fixa na esquerda, adicionamos um 'padding-left: 85px' 
-           para que o texto centralizado compense a largura da barra fechada sem sobreposição.
-        */
+        /* HERO SECTION */
         .hero-section {{
             position: relative; width: 100%; height: 100vh;
             background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('static/imagens/fundo_menu_site.png');
@@ -178,31 +158,27 @@ def gerar_html_menu(nome_usuario):
             display: flex; justify-content: center; align-items: center; padding-left: 85px;
         }}
         
-        /* Alinhamento dos textos centrais */
         .hero-conteudo {{ text-align: center; color: #FFFFFF; max-width: 850px; padding: 0 20px; }}
         .hero-subtitulo {{ font-size: 20px; font-weight: 700; color: #D6001C; margin-bottom: 12px; letter-spacing: 1px; }}
         .hero-titulo {{ font-size: 64px; font-weight: 900; text-transform: uppercase; line-height: 1.1; margin-bottom: 20px; letter-spacing: 2px; text-shadow: 3px 3px 10px rgba(0,0,0,0.8); }}
         .hero-descricao {{ font-size: 18px; font-weight: 400; margin-bottom: 35px; color: #E5E5E5; text-shadow: 2px 2px 6px rgba(0,0,0,0.6); }}
         
-        /* Botão verde central clássico */
         .btn-saiba-mais {{ display: inline-block; background-color: #00B495; color: #FFFFFF; font-size: 14px; font-weight: 700; text-transform: uppercase; text-decoration: none; padding: 15px 40px; border-radius: 4px; letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }}
         .btn-saiba-mais:hover {{ background-color: #009379; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }}
     </style>
 </head>
 <body>
 
-    <!-- ESTRUTURA COMPLETA DA SIDEBAR DINÂMICA -->
     <nav class="sidebar">
-        <!-- Logo Corporativa Superior -->
-        <div class="sidebar-logo">
+        <!-- O bloco do topo agora abriga a imagem e a tag span com a classe logo-text -->
+        <a href="/menu" class="sidebar-logo">
             <img src="static/imagens/fidelivros_logo_principal.png" alt="Logo">
-        </div>
+            <span class="logo-text">Fidelivros</span>
+        </a>
         
-        <!-- Links com Ícones Vetoriais puros (SVG), dispensando arquivos externos de imagem -->
         <ul class="nav-links">
             <li>
                 <a href="/menu">
-                    <!-- Ícone Vetorial de Gráfico de Linhas (Dashboard) -->
                     <svg class="nav-icon" viewBox="0 0 24 24">
                         <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
                     </svg>
@@ -210,17 +186,13 @@ def gerar_html_menu(nome_usuario):
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <!-- Ícone Vetorial de Gráfico de Barras (Relatório) -->
-                    <svg class="nav-icon" viewBox="0 0 24 24">
-                        <path d="M18 20V10M12 20V4M6 20v-6"/>
-                    </svg>
+                <a href="/relatorio">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
                     <span class="nav-text">Relatórios</span>
                 </a>
             </li>
             <li>
                 <a href="#">
-                    <!-- Ícone Vetorial de Monitor com Cifrão de Dinheiro (Faturamento) -->
                     <svg class="nav-icon" viewBox="0 0 24 24">
                         <rect x="2" y="3" width="20" height="14" rx="2"/>
                         <path d="M12 17v4M8 21h8M12 7v6M10 9h4"/>
@@ -229,10 +201,8 @@ def gerar_html_menu(nome_usuario):
                 </a>
             </li>
             
-            <!-- Botão de Desconexão (Sair) ancorado no final -->
             <li class="btn-logout">
                 <a href="/logout">
-                    <!-- Ícone Vetorial de Porta de Saída -->
                     <svg class="nav-icon" viewBox="0 0 24 24">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
                     </svg>
@@ -242,7 +212,6 @@ def gerar_html_menu(nome_usuario):
         </ul>
     </nav>
 
-    <!-- PAINEL CENTRAL DE CONTEÚDO -->
     <section class="hero-section">
         <div class="hero-conteudo">
             <p class="hero-subtitulo">Olá, {nome_usuario}</p>
@@ -303,3 +272,368 @@ def gerar_html_adm(lista_usuarios):
 </body>
 </html>"""
     return html_base.replace("CHAT_TABELA_CONTEUDO", linhas_tabela)
+
+def gerar_html_relatorio(lista_relatorios, usuario_atual, filtro_dia="", filtro_mes="", filtro_ano=""):
+    """
+    TELA DO USUÁRIO COMUM
+    Contém filtros de data (Dia, Mês, Ano), botão de Relatório Geral e exportação para Excel.
+    """
+    # 1. CONSTRUÇÃO DAS LINHAS DA TABELA (Conforme colunas da imagem image_9b2b3b.png)
+    linhas_tabela = ""
+    for r in lista_relatorios:
+        # Formatamos a data que vem do banco (YYYY-MM-DD) para o padrão brasileiro (DD/MM/YYYY)
+        ano_r, mes_r, dia_r = r['data'].split('-')
+        data_formatada = f"{dia_r}/{mes_r}/{ano_r}"
+        
+        linhas_tabela += f"""
+        <tr>
+            <td>{data_formatada}</td>
+            <td>{r['nfe']}</td>
+            <td>{r['canal']}</td>
+            <td>{r['cliente']}</td>
+            <td>{r['destino']}</td>
+            <td>{r['livro']}</td>
+            <td>{r['quantidade']}</td>
+            <td>R$ {r['valor_nf']:.2f}</td>
+            <td>R$ {r['preco_livro']:.2f}</td>
+            <td>R$ {r['tarifa_venda']:.2f}</td>
+            <td>R$ {r['custo_fixo_ml']:.2f}</td>
+            <td>R$ {r['envios']:.2f}</td>
+            <td style="color: {'#00B495' if r['valor_lucro'] >= 0 else '#D6001C'}; font-weight: 700;">R$ {r['valor_lucro']:.2f}</td>
+            <td>{r['rentabilidade']}%</td>
+        </tr>
+        """
+
+    # Retorna o HTML estruturado com a Sidebar dinâmica
+    return f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidelivros - Relatórios de Vendas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap');
+        * {{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }}
+        body, html {{ height: 100%; width: 100%; background-color: #f4f6f9; overflow: hidden; }}
+        
+        /* SIDEBAR ESTILIZADA (Z-INDEX CORRIGIDO) */
+        .sidebar {{
+            position: fixed; top: 0; left: 0; height: 100vh; width: 85px; background-color: #1A1A1A;
+            border-right: 4px solid #D6001C; display: flex; flex-direction: column; z-index: 9999;
+            transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1); overflow: hidden;
+        }}
+        .sidebar:hover {{ width: 260px; }}
+        .sidebar-logo {{ width: 100%; height: 100px; display: flex; align-items: center; padding-left: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); text-decoration: none; }}
+        .sidebar-logo img {{ height: 45px; width: auto; flex-shrink: 0; }}
+        .logo-text {{ color: #FFFFFF; font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-left: 15px; opacity: 0; transform: translateX(-10px); transition: opacity 0.3s ease, transform 0.3s ease; white-space: nowrap; }}
+        .sidebar:hover .logo-text {{ opacity: 1; transform: translateX(0); transition-delay: 0.15s; }}
+        
+        .nav-links {{ list-style: none; display: flex; flex-direction: column; gap: 10px; padding-top: 20px; flex-grow: 1; }}
+        .nav-links a {{ display: flex; align-items: center; text-decoration: none; height: 60px; padding-left: 25px; transition: background 0.3s ease; }}
+        .nav-links a:hover {{ background-color: rgba(214, 0, 28, 0.15); }}
+        .nav-icon {{ width: 32px; height: 32px; fill: none; stroke: #D6001C; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; transition: transform 0.3s ease; }}
+        .nav-text {{ color: #FFFFFF; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-left: 25px; opacity: 0; transform: translateX(-10px); transition: opacity 0.3s ease, transform 0.3s ease; white-space: nowrap; }}
+        .sidebar:hover .nav-text {{ opacity: 1; transform: translateX(0); transition-delay: 0.15s; }}
+        .btn-logout {{ border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: auto; margin-bottom: 20px; }}
+        
+        /* CONTEÚDO PRINCIPAL COM SCROLL LATERAL SE PRECISAR */
+        .main-content {{ margin-left: 85px; padding: 40px; height: 100vh; overflow-y: auto; background-color: #f8f9fa; }}
+        .titulo-pagina {{ font-size: 28px; font-weight: 900; color: #1A1A1A; text-transform: uppercase; }}
+        
+        /* BARRA DE FILTROS SUPERIOR */
+        .filter-container {{ background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin: 25px 0; display: flex; gap: 15px; align-items: flex-end; }}
+        .form-filtro {{ display: flex; gap: 15px; flex-grow: 1; align-items: flex-end; }}
+        .input-group {{ display: flex; flex-direction: column; gap: 5px; }}
+        .input-group label {{ font-size: 11px; font-weight: 700; color: #666666; text-transform: uppercase; }}
+        .input-field {{ padding: 10px; border: 1px solid #cccccc; border-radius: 4px; font-size: 14px; background: #fdfdfd; width: 100px; }}
+        
+        /* BOTÕES */
+        .btn-filtrar {{ background-color: #1A1A1A; color: white; border: none; padding: 11px 20px; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; font-size: 12px; }}
+        .btn-geral {{ background-color: #A0A0A0; color: white; border: none; padding: 11px 20px; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; text-decoration: none; font-size: 12px; }}
+        .btn-excel {{ background-color: #00B495; color: white; border: none; padding: 11px 20px; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; text-decoration: none; font-size: 12px; margin-left: auto; }}
+        
+        /* TABELA SCROLL HORIZONTAL COMPATÍVEL COM PLANILHAS */
+        .table-container {{ background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-x: auto; }}
+        table {{ width: 100%; border-collapse: collapse; text-align: left; min-width: 1300px; }}
+        th {{ background-color: #0080FF; color: white; padding: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #0066cc; text-align: center; }}
+        td {{ padding: 12px; border: 1px solid #eeeeee; color: #333333; font-size: 13px; font-weight: 500; text-align: center; }}
+        tr:hover {{ background-color: #f2f7ff; }}
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <a href="/menu" class="sidebar-logo">
+            <img src="static/imagens/fidelivros_logo_principal.png" alt="Logo">
+            <span class="logo-text">Fidelivros</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="/menu"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nav-text">Dashboard</span></a></li>
+            <li><a href="/relatorio"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg><span class="nav-text">Relatórios</span></a></li>
+            <li class="btn-logout"><a href="/logout"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span class="nav-text">Sair</span></a></li>
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <h1 class="titulo-pagina">Consulta de Vendas e Rentabilidade</h1>
+        
+        <!-- SEÇÃO DE FILTROS SUPERIORES -->
+        <div class="filter-container">
+            <form action="/relatorio" method="GET" class="form-filtro">
+                <div class="input-group">
+                    <label>Dia</label>
+                    <input type="number" name="dia" value="{filtro_dia}" min="1" max="31" placeholder="Ex: 25" class="input-field">
+                </div>
+                <div class="input-group">
+                    <label>Mês</label>
+                    <input type="number" name="mes" value="{filtro_mes}" min="1" max="12" placeholder="Ex: 06" class="input-field">
+                </div>
+                <div class="input-group">
+                    <label>Ano</label>
+                    <input type="number" name="ano" value="{filtro_ano}" min="2020" max="2030" placeholder="Ex: 2026" class="input-field">
+                </div>
+                <button type="submit" class="btn-filtrar">Filtrar</button>
+                <a href="/relatorio" class="btn-geral">Relatório Geral</a>
+            </form>
+            
+            <!-- BOTÃO DOWNLOAD EXCEL -->
+            <a href="/baixar-excel" class="btn-excel">Baixar Planilha Formatada (.xlsx)</a>
+        </div>
+        
+        <!-- TABELA CORPORATIVA -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>DATA</th>
+                        <th>NFE</th>
+                        <th>CANAL DE VENDA</th>
+                        <th>CLIENTE</th>
+                        <th>DESTINO</th>
+                        <th>LIVRO</th>
+                        <th>QNTIDADE</th>
+                        <th>VALOR DA NF</th>
+                        <th>PREÇO DO LIVRO</th>
+                        <th>TARIFA DE VENDA</th>
+                        <th>CUSTO FIXO ML</th>
+                        <th>ENVIOS</th>
+                        <th>VALOR DO LUCRO</th>
+                        <th>RENTABILIDADE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {linhas_tabela}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>"""
+
+def gerar_html_relatorio_adm(lista_relatorios, usuario_atual, filtro_dia="", filtro_mes="", filtro_ano=""):
+    """
+    TELA DO ADMINISTRADOR
+    Contém todos os campos manuais da imagem image_9b2b3b.png em grid para lançamento de faturamento.
+    """
+    linhas_tabela = ""
+    for r in lista_relatorios:
+        ano_r, mes_r, dia_r = r['data'].split('-')
+        data_formatada = f"{dia_r}/{mes_r}/{ano_r}"
+        
+        linhas_tabela += f"""
+        <tr>
+            <td>{data_formatada}</td>
+            <td>{r['nfe']}</td>
+            <td>{r['canal']}</td>
+            <td>{r['cliente']}</td>
+            <td>{r['destino']}</td>
+            <td>{r['livro']}</td>
+            <td>{r['quantidade']}</td>
+            <td>R$ {r['valor_nf']:.2f}</td>
+            <td>R$ {r['preco_livro']:.2f}</td>
+            <td>R$ {r['tarifa_venda']:.2f}</td>
+            <td>R$ {r['custo_fixo_ml']:.2f}</td>
+            <td>R$ {r['envios']:.2f}</td>
+            <td style="color: {'#00B495' if r['valor_lucro'] >= 0 else '#D6001C'}; font-weight: 700;">R$ {r['valor_lucro']:.2f}</td>
+            <td>{r['rentabilidade']}%</td>
+        </tr>
+        """
+
+    return f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidelivros - Gerenciamento Administrativo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap');
+        * {{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }}
+        body, html {{ height: 100%; width: 100%; background-color: #f4f6f9; overflow: hidden; }}
+        
+        /* SIDEBAR */
+        .sidebar {{
+            position: fixed; top: 0; left: 0; height: 100vh; width: 85px; background-color: #1A1A1A;
+            border-right: 4px solid #D6001C; display: flex; flex-direction: column; z-index: 9999;
+            transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1); overflow: hidden;
+        }}
+        .sidebar:hover {{ width: 260px; }}
+        .sidebar-logo {{ width: 100%; height: 100px; display: flex; align-items: center; padding-left: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); text-decoration: none; }}
+        .sidebar-logo img {{ height: 45px; width: auto; flex-shrink: 0; }}
+        .logo-text {{ color: #FFFFFF; font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-left: 15px; opacity: 0; transform: translateX(-10px); transition: opacity 0.3s ease, transform 0.3s ease; white-space: nowrap; }}
+        .sidebar:hover .logo-text {{ opacity: 1; transform: translateX(0); transition-delay: 0.15s; }}
+        
+        .nav-links {{ list-style: none; display: flex; flex-direction: column; gap: 10px; padding-top: 20px; flex-grow: 1; }}
+        .nav-links a {{ display: flex; align-items: center; text-decoration: none; height: 60px; padding-left: 25px; transition: background 0.3s ease; }}
+        .nav-links a:hover {{ background-color: rgba(214, 0, 28, 0.15); }}
+        .nav-icon {{ width: 32px; height: 32px; fill: none; stroke: #D6001C; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }}
+        .nav-text {{ color: #FFFFFF; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-left: 25px; opacity: 0; transform: translateX(-10px); transition: opacity 0.3s ease, transform 0.3s ease; white-space: nowrap; }}
+        .sidebar:hover .nav-text {{ opacity: 1; transform: translateX(0); transition-delay: 0.15s; }}
+        .btn-logout {{ border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: auto; margin-bottom: 20px; }}
+        
+        /* CONTEÚDO */
+        .main-content {{ margin-left: 85px; padding: 40px; height: 100vh; overflow-y: auto; background-color: #f8f9fa; }}
+        .titulo-pagina {{ font-size: 28px; font-weight: 900; color: #D6001C; text-transform: uppercase; }}
+        
+        /* FILTROS */
+        .filter-container {{ background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin: 20px 0; display: flex; gap: 15px; align-items: flex-end; }}
+        .form-filtro {{ display: flex; gap: 15px; flex-grow: 1; align-items: flex-end; }}
+        .input-field-filter {{ padding: 10px; border: 1px solid #cccccc; border-radius: 4px; font-size: 14px; width: 100px; }}
+        
+        /* FORMULÁRIO GRID DE ENTRADA ADM */
+        .form-container {{ background: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 30px; border-top: 4px solid #D6001C; }}
+        .form-titulo {{ font-size: 16px; font-weight: 700; color: #1A1A1A; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }}
+        .form-grid {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }}
+        .input-group {{ display: flex; flex-direction: column; gap: 5px; }}
+        .input-group label {{ font-size: 11px; font-weight: 700; color: #555555; text-transform: uppercase; }}
+        .input-field {{ padding: 11px; border: 1px solid #cccccc; border-radius: 4px; font-size: 13px; outline: none; background: #fdfdfd; width: 100%; }}
+        .input-field:focus {{ border-color: #D6001C; }}
+        
+        .btn-filtrar {{ background-color: #1A1A1A; color: white; border: none; padding: 11px 20px; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; font-size: 12px; }}
+        .btn-geral {{ background-color: #A0A0A0; color: white; border: none; padding: 11px 20px; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; text-decoration: none; font-size: 12px; }}
+        .btn-excel {{ background-color: #00B495; color: white; border: none; padding: 11px 20px; border-radius: 4px; font-weight: 700; text-decoration: none; text-transform: uppercase; font-size: 12px; margin-left: auto; }}
+        .btn-submit {{ grid-column: span 4; background-color: #D6001C; color: white; border: none; padding: 14px; border-radius: 4px; font-weight: 700; text-transform: uppercase; cursor: pointer; margin-top: 10px; font-size: 14px; transition: background 0.2s; }}
+        .btn-submit:hover {{ background-color: #b50017; }}
+        
+        /* TABELA */
+        .table-container {{ background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-x: auto; }}
+        table {{ width: 100%; border-collapse: collapse; text-align: left; min-width: 1300px; }}
+        th {{ background-color: #0080FF; color: white; padding: 12px; font-size: 11px; text-transform: uppercase; border: 1px solid #0066cc; text-align: center; }}
+        td {{ padding: 12px; border: 1px solid #eeeeee; color: #333333; font-size: 13px; font-weight: 500; text-align: center; }}
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <a href="/menu" class="sidebar-logo">
+            <img src="static/imagens/fidelivros_logo_principal.png" alt="Logo">
+            <span class="logo-text">Fidelivros</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="/menu"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg><span class="nav-text">Dashboard</span></a></li>
+            <li><a href="/relatorio-adm"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg><span class="nav-text">Relatórios</span></a></li>
+            <li class="btn-logout"><a href="/logout"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg><span class="nav-text">Sair</span></a></li>
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <h1 class="titulo-pagina">Painel de Controle - Admin</h1>
+        
+        <!-- LANÇAMENTO FINANCEIRO -->
+        <div class="form-container">
+            <h2 class="form-titulo">Lançar Registro de Venda (Campos Planilha)</h2>
+            <form action="/add-relatorio" method="POST" class="form-grid">
+                <div class="input-group">
+                    <label>Data da Venda</label>
+                    <input type="date" name="txt_data" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>NFE</label>
+                    <input type="text" name="txt_nfe" placeholder="Nº Nota Fiscal" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>Canal de Venda</label>
+                    <input type="text" name="txt_canal" placeholder="Ex: Mercado Livre" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>Cliente</label>
+                    <input type="text" name="txt_cliente" placeholder="Nome Completo" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>Destino (UF)</label>
+                    <input type="text" name="txt_destino" placeholder="Ex: AM, SP" maxlength="2" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>Livro Objeto</label>
+                    <input type="text" name="txt_livro" placeholder="Título do Livro" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>Quantidade</label>
+                    <input type="number" name="txt_quantidade" min="1" value="1" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>Valor da NF (R$)</label>
+                    <input type="number" step="0.01" name="txt_valor_nf" placeholder="0.00" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>Preço do Livro (Custo R$)</label>
+                    <input type="number" step="0.01" name="txt_preco_livro" placeholder="0.00" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>Tarifa de Venda (R$)</label>
+                    <input type="number" step="0.01" name="txt_tarifa_venda" placeholder="0.00" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>Custo Fixo ML (R$)</label>
+                    <input type="number" step="0.01" name="txt_custo_fixo_ml" placeholder="0.00" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>Envios (Frete R$)</label>
+                    <input type="number" step="0.01" name="txt_envios" placeholder="0.00" class="input-field" required>
+                </div>
+                <button type="submit" class="btn-submit">Calcular e Adicionar na Planilha</button>
+            </form>
+        </div>
+
+        <!-- SEÇÃO DE FILTROS DO ADM -->
+        <div class="filter-container">
+            <form action="/relatorio-adm" method="GET" class="form-filtro">
+                <input type="number" name="dia" value="{filtro_dia}" min="1" max="31" placeholder="Dia" class="input-field-filter">
+                <input type="number" name="mes" value="{filtro_mes}" min="1" max="12" placeholder="Mês" class="input-field-filter">
+                <input type="number" name="ano" value="{filtro_ano}" min="2020" max="2030" placeholder="Ano" class="input-field-filter">
+                <button type="submit" class="btn-filtrar">Filtrar</button>
+                <a href="/relatorio-adm" class="btn-geral">Relatório Geral</a>
+            </form>
+            <a href="/baixar-excel" class="btn-excel">Baixar Planilha (.xlsx)</a>
+        </div>
+
+        <!-- TABELA DE EXIBIÇÃO -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>DATA</th>
+                        <th>NFE</th>
+                        <th>CANAL DE VENDA</th>
+                        <th>CLIENTE</th>
+                        <th>DESTINO</th>
+                        <th>LIVRO</th>
+                        <th>QNTIDADE</th>
+                        <th>VALOR DA NF</th>
+                        <th>PREÇO DO LIVRO</th>
+                        <th>TARIFA DE VENDA</th>
+                        <th>CUSTO FIXO ML</th>
+                        <th>ENVIOS</th>
+                        <th>VALOR DO LUCRO</th>
+                        <th>RENTABILIDADE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {linhas_tabela}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>"""
